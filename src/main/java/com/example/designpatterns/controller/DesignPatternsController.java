@@ -22,6 +22,16 @@ import com.example.designpatterns.singleton.SingletonService;
 import com.example.designpatterns.strategy.CreditCardPayment;
 import com.example.designpatterns.strategy.PaypalPayment;
 import com.example.designpatterns.strategy.ShoppingCart;
+import com.example.designpatterns.chainofresponsibility.AbstractLogger;
+import com.example.designpatterns.chainofresponsibility.ConsoleLogger;
+import com.example.designpatterns.chainofresponsibility.ErrorLogger;
+import com.example.designpatterns.chainofresponsibility.FileLogger;
+import com.example.designpatterns.command.Broker;
+import com.example.designpatterns.command.BuyStock;
+import com.example.designpatterns.command.SellStock;
+import com.example.designpatterns.command.Stock;
+import com.example.designpatterns.interpreter.Expression;
+import com.example.designpatterns.interpreter.TerminalExpression;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -235,5 +245,43 @@ public class DesignPatternsController {
         String paypalResult = cart.checkout(50);
 
         return ccResult + " | " + paypalResult;
+    }
+
+    @GetMapping("/chain-of-responsibility")
+    public String chainOfResponsibility() {
+        AbstractLogger loggerChain = new ConsoleLogger(AbstractLogger.INFO);
+        AbstractLogger fileLogger = new FileLogger(AbstractLogger.DEBUG);
+        AbstractLogger errorLogger = new ErrorLogger(AbstractLogger.ERROR);
+
+        loggerChain.setNextLogger(fileLogger);
+        fileLogger.setNextLogger(errorLogger);
+
+        String info = loggerChain.logMessage(AbstractLogger.INFO, "This is an information.");
+        String debug = loggerChain.logMessage(AbstractLogger.DEBUG, "This is a debug level information.");
+        String error = loggerChain.logMessage(AbstractLogger.ERROR, "This is an error information.");
+
+        return info + " | " + debug + " | " + error;
+    }
+
+    @GetMapping("/command")
+    public String command() {
+        Stock abcStock = new Stock();
+
+        BuyStock buyStockOrder = new BuyStock(abcStock);
+        SellStock sellStockOrder = new SellStock(abcStock);
+
+        Broker broker = new Broker();
+        broker.takeOrder(buyStockOrder);
+        broker.takeOrder(sellStockOrder);
+
+        List<String> results = broker.placeOrders();
+        return String.join(" | ", results);
+    }
+
+    @GetMapping("/interpreter")
+    public String interpreter() {
+        Expression isMale = new TerminalExpression("John");
+        Expression isMarried = new TerminalExpression("Married");
+        return "John is male? " + isMale.interpret("John") + " | Julie is a married women? " + isMarried.interpret("Married Julie");
     }
 }
