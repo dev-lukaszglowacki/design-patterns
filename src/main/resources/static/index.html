@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Design Pattern Tester</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #patterns {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        #result {
+            width: 80%;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #f4f4f4;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Design Pattern Tester</h1>
+    <div id="patterns"></div>
+    <h2>Result:</h2>
+    <pre id="result"></pre>
+
+    <script>
+        const patternsDiv = document.getElementById('patterns');
+        const resultDiv = document.getElementById('result');
+
+        fetch('/api/patterns')
+            .then(response => response.json())
+            .then(patterns => {
+                for (const pattern in patterns) {
+                    const button = document.createElement('button');
+                    button.textContent = pattern;
+                    button.onclick = () => testPattern(patterns[pattern]);
+                    patternsDiv.appendChild(button);
+                }
+            });
+
+        function testPattern(url) {
+            resultDiv.textContent = 'Loading...';
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    resultDiv.textContent = data;
+                })
+                .catch(error => {
+                    resultDiv.textContent = 'Error: ' + error;
+                });
+        }
+    </script>
+</body>
+</html>
