@@ -35,7 +35,11 @@ import com.example.designpatterns.interpreter.TerminalExpression;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 public class DesignPatternsController {
@@ -52,6 +56,16 @@ public class DesignPatternsController {
         this.shapeFactory = shapeFactory;
     }
 
+    @GetMapping("/api/patterns")
+    public Map<String, String> getAllPatterns() {
+        String path = "src/main/java/com/example/designpatterns";
+        File file = new File(path);
+        String[] directories = file.list((current, name) -> new File(current, name).isDirectory());
+        return Arrays.stream(directories)
+                .filter(name -> !name.equals("controller"))
+                .collect(Collectors.toMap(name -> name, name -> "/" + name.toLowerCase()));
+    }
+ 
     @GetMapping("/singleton")
     public String singleton() {
         String message1 = singletonService1.getMessage();
@@ -67,7 +81,7 @@ public class DesignPatternsController {
         return circle.draw() + " | " + rectangle.draw();
     }
 
-    @GetMapping("/abstract-factory")
+    @GetMapping("/abstractfactory")
     public String abstractFactory() {
         Application app;
         GUIFactory factory;
@@ -219,7 +233,7 @@ public class DesignPatternsController {
         return startStateResult + " | " + stopStateResult;
     }
 
-    @GetMapping("/template-method")
+    @GetMapping("/templatemethod")
     public String templateMethod() {
         com.example.designpatterns.templatemethod.Game game = new com.example.designpatterns.templatemethod.Cricket();
         String cricketResult = game.play();
@@ -247,7 +261,7 @@ public class DesignPatternsController {
         return ccResult + " | " + paypalResult;
     }
 
-    @GetMapping("/chain-of-responsibility")
+    @GetMapping("/chainofresponsibility")
     public String chainOfResponsibility() {
         AbstractLogger loggerChain = new ConsoleLogger(AbstractLogger.INFO);
         AbstractLogger fileLogger = new FileLogger(AbstractLogger.DEBUG);
