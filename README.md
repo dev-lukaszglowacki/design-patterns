@@ -1,29 +1,19 @@
 # Design Patterns in Java
 
-Design patterns are reusable solutions to common problems encountered during software development. They offer proven, standardized approaches to design challenges, leading to more maintainable, flexible, and scalable code in Java. These patterns are broadly categorized into three types: creational, structural, and behavioral.
+This project provides examples of various design patterns implemented in Java using Spring Boot.
 
-## How to Run
+## Getting Started
 
-This project is a Spring Boot application built with Maven. To build and run the project, follow these steps:
+To get started with this project, clone the repository and run the following command:
 
-1.  **Build the project:**
-    ```bash
-    ./mvnw clean install
-    ```
+```bash
+./mvnw spring-boot:run
+```
 
-2.  **Run the application:**
-    ```bash
-    ./mvnw spring-boot:run
-    ```
-
-    Alternatively, you can run the generated JAR file:
-    ```bash
-    java -jar target/design-patterns-0.0.1-SNAPSHOT.jar
-    ```
-
-The application will start on port 8080 (by default). You can then access the different design pattern examples via the defined endpoints (e.g., `http://localhost:8080/singleton`).
+This will start the application on port 8080. You can then access the application at http://localhost:8080.
 
 ## Creational Patterns
+...
 
 Creational patterns focus on object creation mechanisms, trying to create objects in a manner suitable to the situation.
 
